@@ -1,0 +1,19 @@
+@import './loop/loop.component-theme';
+@import './mert/mert.component-theme';
+@import './legard/legard.component-theme';
+@import './test/test.component-theme';
+@mixin component-theme($theme) {
+    @include loop-theme($theme);
+    @include mert-theme($theme);
+    @include legard-theme($theme);
+    @include test-theme($theme);
+}
+
+
+
+
+
+
+
+
+
