@@ -18,7 +18,8 @@ function themeInclude(file){
 
 function themeImport(file){
   let x = path.relative(route_to_themesList, themeFilePath(file));
-  return `@import \'${"." + ((path.join(path.parse(x).dir, path.parse(x).name.slice(1, this.length))).slice(2, this.length)).replace(/\\/g,'/')}\';\r`;
+  //return `@import \'${"." + ((path.join(path.parse(x).dir, path.parse(x).name.slice(1, this.length))).slice(2, this.length)).replace(/\\/g,'/')}\';\r`;
+  return `@import \'${"." + x.slice(2, this.length).replace(/\\/g,'/')}\';\r`;
 };
 
 function themeName(file){
@@ -26,19 +27,22 @@ function themeName(file){
 };
 
 function themeFilePath(file){
-  return path.join(file.base, themeName(file), "_" + path.parse(file.path).name + "-theme.scss");
+  return file.path.replace(".scss", "-theme.scss");
+  //return path.join(file.base, themeName(file), "_" + path.parse(file.path).name + "-theme.scss");
 };
 
 function baseFilePath(file){
-  return path.join(file.base, themeName(file), "_" + path.parse(file.path).name + "-base.scss");
+  return file.path.replace(".scss", "-base.scss");
+  //return path.join(file.base, themeName(file), "_" + path.parse(file.path).name + "-base.scss");
 };
 
 function componentRoute(file){
-  return path.join(file.base, themeName(file), path.parse(file.path).name + ".ts")
-}
+  return file.path.replace(".scss", ".ts");
+};
 
 function componentThemeImportStatement(file){
-  return `@import \"${path.relative(themeFilePath(file), "./node_modules/@angular/material/core/theming/all-theme").replace(/\\/g,'/').slice(3, this.length)}\";`;
+  //.slice(3, this.length)
+  return `@import \"${path.relative(themeFilePath(file), "./src/app/scss/material/core/theming/all-theme").replace(/\\/g,'/')}\";`;
 };
 
 function componentThemeMixinStatement(file){
@@ -88,9 +92,10 @@ exports.add = function ( file ) {
           });
     });
 
-    fs.writeFile(file.path, `@import \"${path.parse(baseFilePath(file)).name.slice( 1 , this.length ) }\";`);
+    fs.writeFile(file.path, `@import \"${path.parse(baseFilePath(file)).name + ".scss"}\";`);
 
     fs.readFile(componentRoute(file), "utf8", ( err , data ) => {
+      console.log(componentRoute(file));
       let lines = data.split('\n');
         lines[lines.findIndex(ofStylesUrl)] = `   styleUrls: [\'./${path.parse(file.path).name + '.css'}\']`;
       let updated = lines.map(x => x.concat('\n')).reduce(( x , y ) => x + y );
