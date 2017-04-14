@@ -1,92 +1,45 @@
-# production_quickstart
+# quickstartProduction
 
-## things that are not built together
+## What this is:
 
-build:aot  (is currently done without a watcher)
-build (for jit)
-scss compilation
+Based off of the Angular seed project.
 
-## efficiency issues
+A good starting point for any Angular project, AOT compilation ready.
 
-generating new components with the current setup requires alot of manual setup (which in turn leaves alot of room for human error)
+## What it's built with:
 
-current generation leaves
+* [Angular](https://angular.io/)
+* [@angular/flex-layout](https://github.com/angular/flex-layout)
+* [@angular/material2](https://material.angular.io/)
+* [Angular-cli](https://github.com/angular/angular-cli)
+* [Angular quickstart seed](https://github.com/angular/quickstart)
+* [System.js](https://github.com/systemjs/systemjs)
+* [Rollup.js](http://rollupjs.org/)
+* [Node.js](https://nodejs.org/en/)
+* [Gulp.js](https://github.com/gulpjs/gulp)
 
-```plain
-<root>
-<scss>
-<src>
-<app>
-_component-theme.scss
-<component name>
-  <component name>.component.ts|html|scss
+## Rationale
 
-As part of our styling procedure we're using 2 scss partials
+While the ng-cli is capable of generating its own web-pack based projects the Angular quickstart seed wasn't really needed I found ng-cli to be hiding too much of the implementation and I wasn't able to get it to do exactly what I wanted.
 
-_<component name>.component-base.scss
-_<component name>.component-theme.scss
+However now that I'm looking at AOT compilation and lazy-loading I'm running into problems with System.js/Rollup.js as [Rollup doesn't have codesplitting](https://github.com/rollup/rollup/issues/372). So I'd recommend going with the web-pack ng-cli and just hacking on the ng-cli if you're determined enough to customize it.
 
-where -theme is a mixin that gets wired through _component-theme.scss for faster design change
-and -base is importing in app level styles
+I'm still using ng-cli to generate components, modules, services, etc. as it's still convenient. Essentially [this](https://github.com/angular/angular-cli/wiki/stories-moving-out-of-the-cli).
 
-gulpfile needs to ignore the bootstrap directory while compiling scss
+## Workflow:
 
-ng g component <path>/<component name>
+* Have gulp w:comp running, upon generating a component it will generate the files to support @angular/material themeing.
+* Have gulp w:html running, when you lay-out the component template it will parse the class-names and generate the required properties and class-names in the scss and component file. (NOT YET IMPLEMENTED)
+* Use ng g component *component name* to start to layout the project.
+* Goto the template file of the component, scaffold it out, give it a class-name following this syntax:  **[Exact syntax not yet decided. It will be related to flex-box; flex-containers and flex-items.]**
 
-will generate a directory at src/app/<path>/<component name> containing <component name>.component.ts|html|scss
+* Use the command "npm run build:aot" to build a fully optimized single file. (Issues reguarding lazy loaded modules exist here, I haven't had the chance to dive into it yet.)
+* use the command "npm start" for production. Uses JIT compilation rather than AOT.
 
-we can use a gulp directory watcher to watch for the addition of src/app/<path>/<component name>/<component name>.component.scss
-and then create the 2 partials and wire it up.
+## Noteworthy implementation details:
 
-Wiring that needs to be done: -theme needs to be wired through the mixin _component-theme
+* custom scripts located in gulp_support/ to help with the large amount of files generated and boilerplate.
 
-how to implement this:
+## Work to be done:
 
-gulp watcher for components (adding a component, moving a component and deleting a component should all be dealt with accordingly)
-
-Upon adding a component, create the 2 files
-
-
-```
-
-
-
-
-
-## build tools
-
-vscode
-gulp
-npm
-
-## config files
-
-package.json
-
-.editorconfig
-.gitignore
-
-systemjs-angular-loader.js
-systemjs.config.extras.js
-systemjs.config.js
-systemjs.config.server.js
-
-.angular-cli.json
-
-bs-config.e2e.json
-bs-config.json
-karma.conf.js
-
-rollup-config.js
-tsconfig.json
-tsconfig-aot.json
-
-
-## clean up
-
-Excessive amounts of systemjs config files
-
-
-## Current things that greatly displease me
-
-With this build system we cannot do AOT compilation and lazy-load modules as rollup does not support code splitting.
+Deciding on an intelligent syntax so I can use the custom gulp scripts to automate the wiring up of the components with flex-layout.
