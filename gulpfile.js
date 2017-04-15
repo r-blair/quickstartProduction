@@ -1,18 +1,29 @@
+const path = require("path");
 const gulp = require("gulp");
 const watch = require("gulp-watch");
 const sass = require("gulp-sass");
 const autoPrefixer = require("gulp-autoprefixer");
 const sourcemaps = require("gulp-sourcemaps");
 
-const files = require("./gulp_support/component_scss_automation");
+const materialAuto = require("./gulp_support/component_material_automation");
+const flexLayoutAuto = require("./gulp_support/component_flexlayout_automation");
 
 const autoPrefixerOptions = {
     browsers : ['last 2 versions']
 }
 
 gulp.task('w:comp', function(){
-    return watch('./src/app/**/*.component.scss', function ( vinyl ) {
-        files[vinyl.event](vinyl);
+    return watch(['./src/app/**/*.component.scss', './src/app/**/*.component.html'], function ( vinyl ) {
+      switch(path.parse(vinyl.path).ext) {
+        case '.scss':
+            materialAuto[vinyl.event](vinyl);
+          break
+        case '.html':
+            flexLayoutAuto[vinyl.event](vinyl);
+          break
+        default:
+          console.log(`something went wrong ${vinyl.path}`);
+      };
     });
 });
 

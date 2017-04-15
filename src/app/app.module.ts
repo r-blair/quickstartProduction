@@ -8,6 +8,8 @@ import { SharedModule } from './_shared/shared.module';
 
 import { AppComponent }  from './app.component';
 import { TestComponent } from './test/test.component';
+import { Test2Component } from './test2/test2.component';
+import { Test3Component } from './test3/test3.component';
 
 @NgModule({
   imports:      [
@@ -16,7 +18,7 @@ import { TestComponent } from './test/test.component';
     SharedModule, // Do I want this here?
     MaterialModule
     ],
-  declarations: [ AppComponent, TestComponent ],
+  declarations: [ AppComponent, TestComponent, Test2Component, Test3Component ],
   bootstrap:    [ AppComponent ]
 })
 export class AppModule { }

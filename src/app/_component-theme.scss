@@ -1,13 +1,13 @@
-@import './loop/loop.component-theme';
-@import './mert/mert.component-theme';
-@import './legard/legard.component-theme';
-@import './test/test.component-theme';
+@import './test3/test3.component-theme.scss';
+@import './test2/test2.component-theme.scss';
+@import './test/test.component-theme.scss';
 @mixin component-theme($theme) {
-    @include loop-theme($theme);
-    @include mert-theme($theme);
-    @include legard-theme($theme);
+    @include test3-theme($theme);
+    @include test2-theme($theme);
     @include test-theme($theme);
 }
+
+
 
 
 

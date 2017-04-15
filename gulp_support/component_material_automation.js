@@ -18,7 +18,6 @@ function themeInclude(file){
 
 function themeImport(file){
   let x = path.relative(route_to_themesList, themeFilePath(file));
-  //return `@import \'${"." + ((path.join(path.parse(x).dir, path.parse(x).name.slice(1, this.length))).slice(2, this.length)).replace(/\\/g,'/')}\';\r`;
   return `@import \'${"." + x.slice(2, this.length).replace(/\\/g,'/')}\';\r`;
 };
 
@@ -28,12 +27,10 @@ function themeName(file){
 
 function themeFilePath(file){
   return file.path.replace(".scss", "-theme.scss");
-  //return path.join(file.base, themeName(file), "_" + path.parse(file.path).name + "-theme.scss");
 };
 
 function baseFilePath(file){
   return file.path.replace(".scss", "-base.scss");
-  //return path.join(file.base, themeName(file), "_" + path.parse(file.path).name + "-base.scss");
 };
 
 function componentRoute(file){
@@ -41,7 +38,6 @@ function componentRoute(file){
 };
 
 function componentThemeImportStatement(file){
-  //.slice(3, this.length)
   return `@import \"${path.relative(themeFilePath(file), "./src/app/scss/material/core/theming/all-theme").replace(/\\/g,'/')}\";`;
 };
 

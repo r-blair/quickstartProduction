@@ -17,11 +17,29 @@ function scssPath(file){
   return file.path.replace(".html", ".scss");
 };
 
+function nameOfComponent(file){
+  return path.parse(file.path).name.slice(0,-10);
+}
+
+function isKebabCase(file, string){
+  let name = nameOfComponent(file);
+}
+
+function retrieveClassString(string){}
+/*
+Different types of cases used here:
+
+In HTML class names kebab-case
+In TS property names Pascal-case
+
+ */
+
 
 /**
  * On creation every template gets a container element.
  */
 exports.add = function(file) {
+  console.log(`add html`);
 
 }
 
@@ -30,9 +48,9 @@ exports.add = function(file) {
  */
 
 exports.change = function(file) {
-
+  console.log("change html");
 }
 
 exports.unlink = function(file) {
-
+  console.log("unlink html");
 }
