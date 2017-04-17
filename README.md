@@ -31,7 +31,7 @@ I'm still using ng-cli to generate components, modules, services, etc. as it's s
 * Have gulp w:comp running, upon generating a component it will generate the files to support @angular/material themeing.
 * Have gulp w:html running, when you lay-out the component template it will parse the class-names and generate the required properties and class-names in the scss and component file. (NOT YET IMPLEMENTED)
 * Use ng g component *component name* to start to layout the project.
-* Goto the template file of the component, scaffold it out, give it a class-name following this syntax:  **[Exact syntax not yet decided. It will be related to flex-box; flex-containers and flex-items.]**
+* Goto the template file of the component, scaffold it out, give it a class-name following this syntax:  **Must use Emmet to scaffold your template**
 
 * Use the command "npm run build:aot" to build a fully optimized single file. (Issues reguarding lazy loaded modules exist here, I haven't had the chance to dive into it yet.)
 * use the command "npm start" for production. Uses JIT compilation rather than AOT.

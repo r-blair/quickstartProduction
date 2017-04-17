@@ -38,7 +38,7 @@ function componentRoute(file){
 };
 
 function componentThemeImportStatement(file){
-  return `@import \"${path.relative(themeFilePath(file), "./src/app/scss/material/core/theming/all-theme").replace(/\\/g,'/')}\";`;
+  return `@import \"${path.relative(themeFilePath(file), "./src/app/scss/material/core/theming/all-theme").replace(/\\/g,'/')}\";`; // THIS IS OS SPECIFIC.. ?
 };
 
 function componentThemeMixinStatement(file){
