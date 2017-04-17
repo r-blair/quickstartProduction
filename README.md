@@ -38,7 +38,7 @@ I'm still using ng-cli to generate components, modules, services, etc. as it's s
 
 ## Noteworthy implementation details:
 
-* custom scripts located in gulp_support/ to help with the large amount of files generated and boilerplate.
+* custom scripts located in gulp_support/ to help with the large amount of files generated and boilerplate. Mostly devoted to minimizing human-error while implementing @angular/flex-layout and @angular/material.
 
 ## Work to be done:
 
