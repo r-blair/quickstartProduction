@@ -47,19 +47,19 @@ function retrieveClassString(string){
 
   return string.slice(classStringStart, classStringEnd);
 
-}; // Terrible solution holding everything together. TESTED AND WORKS
+}; // TESTED AND WORKS.
 
 function parseClassNamesIntoArray(string){
   return retrieveClassString(string).split(String.fromCharCode(32));
 }; //TESTED AND WORKS
 
-function searchClassNameArrayForContainer(string, file){
-  return parseClassNamesIntoArray.includes(`-container`);
-}; //UNTESTED
+// function searchClassNameArrayForContainer(string){
+//   return parseClassNamesIntoArray.includes(`-container`);
+// }; //UNTESTED
 
-function searchClassNameArrayForItem(string, file){
-  return parseClassNamesIntoArray.includes(`${nameOfComponent(file)}-item`);
-}; //UNTESTED
+// function searchClassNameArrayForItem(string){
+//   return parseClassNamesIntoArray.includes(`${nameOfComponent(file)}-item`);
+// }; //UNTESTED
 
 function findFirstClosingAngleBracket(string){
   return string.search(/>/);
@@ -85,11 +85,11 @@ function appendContainerDirectives(string){
   // THIS IS ALL WRONG. NAME CANNOT BE DERIVED FROM FILE. MULTIPLED ELEMENTS WITHIN A TEMPLATE.
   return containerDirectivesString =
     `
-    ${string}
+    ${string.slice(0,findFirstClosingAngleBracket(string))}
     [fxLayout]=
     [fxLayoutAlign]=
     [fxLayoutWrap]=
-    [fxLayoutGap]=
+    [fxLayoutGap]= >
     `
 }; // NEED TO INCORPORATE findWritePosition
 
@@ -97,12 +97,12 @@ function appendItemDirectives(string){
   // THIS IS ALL WRONG. NAME CANNOT BE DERIVED FROM FILE. MULTIPLED ELEMENTS WITHIN A TEMPLATE.
   return itemDirectiveString =
     `
-    ${string}
+    ${string.slice(0,findFirstClosingAngleBracket(string))}
     [fxFlex]=
     [fxFlexOrder]=
     [fxFlexOffset]=
     [fxFlexAlign]=
-    [fxFlexFill]=
+    [fxFlexFill]= >
     `
 }; // NEED TO INCORPORATE findWritePosition
 
@@ -185,8 +185,11 @@ exports.change = function(file) {
     if (err) throw err;
     else {
       let lines = data.split('\n');
-      let newLines = lines.map(x => theMagic(x));
-      let updated = newLines.map(x => x.concat('\n')).reduce(( x , y ) => x + y );
+      //let newLines = lines.map(x => theMagic(x));
+      // let updated = newLines.map(x => x.concat('\n')).reduce(( x , y ) => x + y );
+      let updated = lines
+                    .map(x => theMagic(x))
+                    .reduce(( x , y ) => x + y );
         fs.writeFile( route, updated, (err) => {
           if (err) throw err;
         });
