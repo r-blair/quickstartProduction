@@ -172,15 +172,15 @@ exports.change = function(file) {
   const route = "./gulp_support/testing.component.html";
 
   fs.readFile( route , 'ascii', (err, data)=>{
+    // To prevent overwritting work, we only want to run this once.
     if(data.includes("[fx")){
-      return
+      return;
     }
     else{
     if (err) throw err;
     else {
       let lines = data.split('\n');
       let updated = lines.map(x => theMagic(x)).reduce(( x , y ) => x + y );
-
         fs.writeFile( route, updated, (err) => {
           if (err) throw err;
         });

@@ -42,6 +42,7 @@ I'm still using ng-cli to generate components, modules, services, etc. as it's s
 
 ## Work to be done:
 
-Deciding on an intelligent syntax so I can use the custom gulp scripts to automate the wiring up of the components with flex-layout.
-
-Alot of clean-up to be done.
+* Alot of clean-up to be done.
+* Browser-scope considerations.
+* Getting the Angular testing framework in-gear.
+* Current code-generation leaves undesirable whitespace.
