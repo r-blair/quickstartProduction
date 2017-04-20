@@ -1,5 +1,6 @@
 .idea
 .vscode
+test.js
 aot
 node_modules
 jspm_packages

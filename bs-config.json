@@ -1,6 +1,7 @@
 {
   "server": {
     "baseDir": "src",
+    "index": "index-jit.html",
     "routes": {
       "/node_modules": "node_modules"
     }

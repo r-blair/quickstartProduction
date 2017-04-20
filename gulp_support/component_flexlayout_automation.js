@@ -1,23 +1,23 @@
 var fs = require("fs");
 var path = require("path");
 
-// FUNCTIONS
-// Gradually building up complexity by composition of basic functions.
+const testerString = "<div class=\"herp nav-item lerp derp\" >";
+
 function templatePath(file){
   return file.path;
-}; // TESTED AND WORKS.
+};
 
 function componentPath(file){
   return templatePath(file).replace(".html", ".ts");
-}; // TESTED AND WORKS
+};
 
 function stylePath(file){
   return templatePath(file).replace(".html", ".scss");
-}; // TESTED AND WORKS
+};
 
 function nameOfComponent(file){
   return path.parse(file.path).name.slice(0,-10);
-}; // TESTED AND WORKS
+};
 
 function nameOfClass(string){
 
@@ -34,7 +34,7 @@ const findContainerClass = findSuffix("container");
 
 function htmlLineHasClass(string){
   return string.includes("class=");
-}; // TESTED AND WORKS
+};
 
 function retrieveClassString(string){
 
@@ -47,73 +47,36 @@ function retrieveClassString(string){
 
   return string.slice(classStringStart, classStringEnd);
 
-}; // TESTED AND WORKS.
+};
 
 function parseClassNamesIntoArray(string){
   return retrieveClassString(string).split(String.fromCharCode(32));
-}; //TESTED AND WORKS
-
-// function searchClassNameArrayForContainer(string){
-//   return parseClassNamesIntoArray.includes(`-container`);
-// }; //UNTESTED
-
-// function searchClassNameArrayForItem(string){
-//   return parseClassNamesIntoArray.includes(`${nameOfComponent(file)}-item`);
-// }; //UNTESTED
+};
 
 function findFirstClosingAngleBracket(string){
   return string.search(/>/);
-}; // UNTESTED
+  }; // UNTESTED
 
 function findWritePosition(string){
   return (findFirstClosingAngleBracket(string) - 1);
-}; // UNTESTED
+  }; // UNTESTED
 
 function kebabCaseToCamelCase(string){
   return string.replace(/-([a-z])/g, function(s, captured){
       return captured.toUpperCase();
     });
-  }; // TESTED AND WORKS
+  };
 
 function camelCaseToKebabCase(string){
   return string.replace(/([A-Z])/g, function(s, captured){
         return "-"+captured.toLowerCase();
       });
-    }; // TESTED AND WORKS
-
-function appendContainerDirectives(string){
-  // THIS IS ALL WRONG. NAME CANNOT BE DERIVED FROM FILE. MULTIPLED ELEMENTS WITHIN A TEMPLATE.
-  return containerDirectivesString =
-    `
-    ${string.slice(0,findFirstClosingAngleBracket(string))}
-    [fxLayout]=
-    [fxLayoutAlign]=
-    [fxLayoutWrap]=
-    [fxLayoutGap]= >
-    `
-}; // NEED TO INCORPORATE findWritePosition
-
-function appendItemDirectives(string){
-  // THIS IS ALL WRONG. NAME CANNOT BE DERIVED FROM FILE. MULTIPLED ELEMENTS WITHIN A TEMPLATE.
-  return itemDirectiveString =
-    `
-    ${string.slice(0,findFirstClosingAngleBracket(string))}
-    [fxFlex]=
-    [fxFlexOrder]=
-    [fxFlexOffset]=
-    [fxFlexAlign]=
-    [fxFlexFill]= >
-    `
-}; // NEED TO INCORPORATE findWritePosition
-
-function lineStartsHTMLElement(string){};
+    }; // unused
 
 function classifyingFunction(string){
 
-
   if(findContainerClass(string) && findItemClass(string)){
     return "container item"
-
   }
   else if (findContainerClass(string)){
     return "container"
@@ -123,56 +86,82 @@ function classifyingFunction(string){
   }
   else {
     return "none"
+  }
+};
+
+function nameOfElementFindingFunction(stringInArray){
+  return (findContainerClass(stringInArray) || findItemClass(stringInArray));
+};
+
+
+
+
+
+function nameOfElement(string){
+  let x =  parseClassNamesIntoArray(string).find(nameOfElementFindingFunction); //name of the element...
+  console.log(x);
+
+  if(findContainerClass(x)){
+    let y = x.length - 10;  // removes "-container"
+    return x.slice( 0 , y );
+  }
+  else if (findItemClass(x)){
+    let y = x.length - 5; // removes "-item"
+    return x.slice( 0 , y );
 
   }
-
-};
-
-function containerItemString(string){
-  return itemString(containerString(string));
-};
-
-function containerString(string){
-
-};
-
-function itemString(string){
+  else{
+    console.log(`Something has gone wrong in nameOfElement. ${args}`);
+  }
 
 };
 
 function theMagic(string){
 
-
-
   switch(classifyingFunction(string)){
-
     case 'container item':
 
-      return appendItemDirectives(appendContainerDirectives(string));
-      break;
-
+      return appendItemDirectives(appendContainerDirectives(string, nameOfElement(string)), nameOfElement(string));
     case 'container':
 
-      return appendContainerDirectives(string);
-      break;
-
+      return appendContainerDirectives(string, nameOfElement(string));
     case 'item':
 
-      return appendItemDirectives(string);
-      break;
-
+      return appendItemDirectives(string, nameOfElement(string));
     case 'none':
 
       return string;
-      break;
-
     default:
       console.log(`You missed a case somehow. Classification: ${classifyingFunction(string)} String: ${string}`);
       throw Error;
-      break
   }
 };
 
+
+function appendContainerDirectives(string, name){
+  return containerDirectivesString =
+    `
+    ${string.slice(0,findFirstClosingAngleBracket(string))}
+    \t[fxLayout]=\"${kebabCaseToCamelCase(name)}Layout\"
+    \t[fxLayoutAlign]=\"${kebabCaseToCamelCase(name)}LayoutAlign\"
+    \t[fxLayoutWrap]=\"${kebabCaseToCamelCase(name)}LayoutWrap\"
+    \t[fxLayoutGap]=\"${kebabCaseToCamelCase(name)}LayoutGap\"
+    >
+    `
+  };
+
+function appendItemDirectives(string, name){
+  return itemDirectiveString =
+    `
+    ${string.slice(0,findFirstClosingAngleBracket(string))}
+    \t[fxFlex]=\"${kebabCaseToCamelCase(name)}Flex\"
+    \t[fxFlexOrder]=\"${kebabCaseToCamelCase(name)}FlexOrder\"
+    \t[fxFlexOffset]=\"${kebabCaseToCamelCase(name)}FlexOffset\"
+    \t[fxFlexAlign]=\"${kebabCaseToCamelCase(name)}FlexAlign\"
+    \t[fxFlexFill]=\"${kebabCaseToCamelCase(name)}FlexFill\"
+    >
+    `
+  };
 
 exports.add = function(file) {
   console.log(`add html`);
@@ -181,24 +170,27 @@ exports.add = function(file) {
 exports.change = function(file) {
 
   const route = "./gulp_support/testing.component.html";
+
   fs.readFile( route , 'ascii', (err, data)=>{
+    if(data.includes("[fx")){
+      return
+    }
+    else{
     if (err) throw err;
     else {
       let lines = data.split('\n');
-      //let newLines = lines.map(x => theMagic(x));
-      // let updated = newLines.map(x => x.concat('\n')).reduce(( x , y ) => x + y );
-      let updated = lines
-                    .map(x => theMagic(x))
-                    .reduce(( x , y ) => x + y );
+      let updated = lines.map(x => theMagic(x)).reduce(( x , y ) => x + y );
+
         fs.writeFile( route, updated, (err) => {
           if (err) throw err;
         });
-    };
+    }
+  };
 });
-
-
 };
 
 exports.unlink = function(file) {
   console.log("unlink html");
 }
+
+

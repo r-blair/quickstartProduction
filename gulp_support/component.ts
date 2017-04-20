@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MQService } from '../../_core/services/media-query.services';
-import {Subscription} from 'rxjs/Subscription';
-import { ASwitch, LayoutAlignSettings, LayoutSettings } from '../../_util/helpers/index';
+import { Subscription } from 'rxjs/Subscription';
+
 
 @Component({
   selector: 'app-bar-box',
@@ -10,8 +10,9 @@ import { ASwitch, LayoutAlignSettings, LayoutSettings } from '../../_util/helper
 })
 export class BarBoxComponent implements OnInit, OnDestroy {
 
-
-
+  // ADD ALL PROPERTIES HERE'
+  // flex-layout properties
+  //property: string;
 
   boxContainerLayout = 'column';
   boxContainerLayoutAlign = 'space-between stretch';
@@ -25,6 +26,8 @@ export class BarBoxComponent implements OnInit, OnDestroy {
   boxLogoFlex = '1 1 auto';
   boxLogoFlexAlign = '';
 
+  // end flex-layout properties
+
   buttonShow = true;
   here = "bar-box";
   exec: Subscription;
@@ -34,68 +37,26 @@ export class BarBoxComponent implements OnInit, OnDestroy {
 
   ngOnInit() { this.exec = this.mqs.feed( x => this.initialState(x)); }
   ngOnDestroy() { this.exec.unsubscribe(); }
-  toggle(){
-    if (this.buttonShow){ this.switch.toggle() } else{};
-      };
-
   initialState(mqAlias: string){
 
-        switch(mqAlias){
+        switch ( mqAlias ) {
           case 'xs':
-            console.log(mqAlias);
-            this.buttonShow = true;
-            this.switch.state = 'inactive';
-            this.boxContainerLayout = 'column';
-            this.boxContainerLayoutAlign = 'space-between stretch';
-            this.boxNavContainerLayout = "column";
-            this.boxNavContainerLayoutAlign = "space-around center";
 
           break;
           case 'sm':
-            console.log(mqAlias);
-            this.buttonShow = true;
-            this.switch.state = 'inactive';
-            this.boxContainerLayout = 'column';
-            this.boxContainerLayoutAlign = 'space-between stretch';
-            this.boxNavContainerLayout = "column";
-            this.boxNavContainerLayoutAlign = "space-around center";
 
           break;
           case 'md':
-            console.log(mqAlias);
-            this.buttonShow = false;
-            this.switch.state = 'active';
-            this.boxContainerLayout = 'row-reverse';
-            this.boxContainerLayoutAlign = 'space-between stretch';
-            this.boxNavContainerLayout = "row";
-            this.boxNavContainerLayoutAlign = "start center";
-            this.boxNavFlex = '1 1 auto';
 
           break;
           case 'lg':
-            console.log(mqAlias);
-            this.buttonShow = false;
-            this.switch.state = 'active';
-            this.boxContainerLayout = 'row-reverse';
-            this.boxContainerLayoutAlign = 'space-between stretch';
-            this.boxNavContainerLayout = "row";
-            this.boxNavContainerLayoutAlign = "start center";
-            this.boxNavFlex = '1 1 auto';
 
           break;
           case 'xl':
-            console.log(mqAlias);
-            this.buttonShow = false;
-            this.switch.state = 'active';
-            this.boxContainerLayout = 'row-reverse';
-            this.boxContainerLayoutAlign = 'space-between stretch';
-            this.boxNavContainerLayout = "row";
-            this.boxNavContainerLayoutAlign = "start center";
-            this.boxNavFlex = '1 1 auto';
 
           break;
           default:
-            console.log(mqAlias);
+            console.log( mqAlias );
               }
       }
 
