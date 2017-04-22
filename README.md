@@ -46,3 +46,4 @@ I'm still using ng-cli to generate components, modules, services, etc. as it's s
 * Browser-scope considerations.
 * Getting the Angular testing framework in-gear.
 * Current code-generation leaves undesirable whitespace.
+* A substantial amount of bugs...

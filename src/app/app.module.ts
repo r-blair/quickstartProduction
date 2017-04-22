@@ -7,18 +7,18 @@ import { CoreModule } from './_core/core.module';
 import { SharedModule } from './_shared/shared.module';
 
 import { AppComponent }  from './app.component';
-import { TestComponent } from './test/test.component';
-import { Test2Component } from './test2/test2.component';
-import { Test3Component } from './test3/test3.component';
+import { TesterComponent } from './tester/tester.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   imports:      [
     BrowserModule,
     CoreModule,
     SharedModule, // Do I want this here?
-    MaterialModule
+    MaterialModule,
+    FlexLayoutModule
     ],
-  declarations: [ AppComponent, TestComponent, Test2Component, Test3Component ],
+  declarations: [ AppComponent, TesterComponent ],
   bootstrap:    [ AppComponent ]
 })
 export class AppModule { }

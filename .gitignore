@@ -7,6 +7,7 @@ jspm_packages
 npm-debug.log
 debug.log
 src/**/*.js
+src/**/*.css
 scss
 !src/systemjs.config.extras.js
 !src/systemjs.config.js

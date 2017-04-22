@@ -1,7 +1,7 @@
 @import "../../scss/material/core/theming/all-theme";
 
 // Define a mixin that accepts a theme and outputs the color styles for the component.
-@mixin test3-theme($theme) {
+@mixin tester-theme($theme) {
   // Extract whichever individual palettes you need from the theme.
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);

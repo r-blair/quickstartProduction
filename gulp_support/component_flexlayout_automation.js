@@ -1,10 +1,31 @@
 var fs = require("fs");
 var path = require("path");
 
-const testerString = "<div class=\"herp nav-item lerp derp\" >";
 
 function templatePath(file){
   return file.path;
+};
+
+function fromRootMQServicePath(){
+  return path.join("src", "app", "_core", "services", "media-query.service.ts");
+};
+
+function relativeMQServicePath(file){
+  let y = path.relative(componentPath(file), fromRootMQServicePath()).replace(/\\/g,'/').length -3;
+  return path.relative(componentPath(file), fromRootMQServicePath()).replace(/\\/g,'/').slice(1, y)
+};
+
+function componentImports(file){
+  return `import { Component, OnInit, OnDestroy } from '@angular/core';\nimport { Subscription } from 'rxjs/Subscription';\n\nimport { MQService } from '${relativeMQServicePath(file)}';`
+
+};
+
+function declarePropertiesInClass(string){
+  return `  ${string}: string;`;
+};
+
+function initializePropertiesInClass(string){
+  return `this.${string} = ""`;
 };
 
 function componentPath(file){
@@ -93,13 +114,9 @@ function nameOfElementFindingFunction(stringInArray){
   return (findContainerClass(stringInArray) || findItemClass(stringInArray));
 };
 
-
-
-
-
 function nameOfElement(string){
   let x =  parseClassNamesIntoArray(string).find(nameOfElementFindingFunction); //name of the element...
-  console.log(x);
+  //console.log(x);
 
   if(findContainerClass(x)){
     let y = x.length - 10;  // removes "-container"
@@ -121,13 +138,13 @@ function theMagic(string){
   switch(classifyingFunction(string)){
     case 'container item':
 
-      return appendItemDirectives(appendContainerDirectives(string, nameOfElement(string)), nameOfElement(string));
+      return appendItemDirectivesHTML(appendContainerDirectivesHTML(string, nameOfElement(string)), nameOfElement(string));
     case 'container':
 
-      return appendContainerDirectives(string, nameOfElement(string));
+      return appendContainerDirectivesHTML(string, nameOfElement(string));
     case 'item':
 
-      return appendItemDirectives(string, nameOfElement(string));
+      return appendItemDirectivesHTML(string, nameOfElement(string));
     case 'none':
 
       return string;
@@ -137,57 +154,113 @@ function theMagic(string){
   }
 };
 
-
-function appendContainerDirectives(string, name){
+function appendContainerDirectivesHTML(string, name){
   return containerDirectivesString =
-    `
-    ${string.slice(0,findFirstClosingAngleBracket(string))}
-    \t[fxLayout]=\"${kebabCaseToCamelCase(name)}Layout\"
-    \t[fxLayoutAlign]=\"${kebabCaseToCamelCase(name)}LayoutAlign\"
-    \t[fxLayoutWrap]=\"${kebabCaseToCamelCase(name)}LayoutWrap\"
-    \t[fxLayoutGap]=\"${kebabCaseToCamelCase(name)}LayoutGap\"
-    >
-    `
+  `${string.slice(0,findFirstClosingAngleBracket(string))}
+  \t[fxLayout]=\"${kebabCaseToCamelCase(name)}Layout\"
+  \t[fxLayoutAlign]=\"${kebabCaseToCamelCase(name)}LayoutAlign\"
+  \t[fxLayoutWrap]=\"${kebabCaseToCamelCase(name)}LayoutWrap\"
+  \t[fxLayoutGap]=\"${kebabCaseToCamelCase(name)}LayoutGap\"
+  >`
   };
 
-function appendItemDirectives(string, name){
+function appendItemDirectivesHTML(string, name){
   return itemDirectiveString =
-    `
-    ${string.slice(0,findFirstClosingAngleBracket(string))}
-    \t[fxFlex]=\"${kebabCaseToCamelCase(name)}Flex\"
-    \t[fxFlexOrder]=\"${kebabCaseToCamelCase(name)}FlexOrder\"
-    \t[fxFlexOffset]=\"${kebabCaseToCamelCase(name)}FlexOffset\"
-    \t[fxFlexAlign]=\"${kebabCaseToCamelCase(name)}FlexAlign\"
-    \t[fxFlexFill]=\"${kebabCaseToCamelCase(name)}FlexFill\"
-    >
-    `
+  `${string.slice(0,findFirstClosingAngleBracket(string))}
+  \t[fxFlex]=\"${kebabCaseToCamelCase(name)}Flex\"
+  \t[fxFlexOrder]=\"${kebabCaseToCamelCase(name)}FlexOrder\"
+  \t[fxFlexOffset]=\"${kebabCaseToCamelCase(name)}FlexOffset\"
+  \t[fxFlexAlign]=\"${kebabCaseToCamelCase(name)}FlexAlign\"
+  >`
   };
 
+function getPropertyNames(string){
+  let x = string.indexOf("\"") + 1;
+  let y = string.length - 1;
+  return string.substring(x,y);
+};
+
+function includesExportClass(string){
+  return string.includes("export class");
+};
+
+function includesConstructor(string){
+  return string.includes("constructor()");
+};
 exports.add = function(file) {
   console.log(`add html`);
 };
 
 exports.change = function(file) {
 
-  const route = "./gulp_support/testing.component.html";
+  const templateRoute = templatePath(file);
+  const componentRoute = componentPath(file);
 
-  fs.readFile( route , 'ascii', (err, data)=>{
+
+
+  // retrieves component file
+  fs.readFile( templateRoute , 'ascii', (err, data) => {
     // To prevent overwritting work, we only want to run this once.
-    if(data.includes("[fx")){
-      return;
+    if(data.includes("[fx")){ // this needs to be rethought
+      console.log(`includes [fx`);
     }
     else{
-    if (err) throw err;
-    else {
-      let lines = data.split('\n');
-      let updated = lines.map(x => theMagic(x)).reduce(( x , y ) => x + y );
-        fs.writeFile( route, updated, (err) => {
+      if (err){
+        throw err;
+      }
+      else {
+
+      let templateLines = data
+                  .split('\n');
+
+      let updatedTemplate = templateLines
+                    .map(x => theMagic(x) /* a better function name would be great */)
+                    .reduce(( x , y ) => x + y );
+
+      let propertyNamesArray = updatedTemplate
+                              .split('\n')
+                              .filter(x => { return x.includes('[fx') })
+                              .map(x => getPropertyNames(x));
+
+      let declareProperties = propertyNamesArray
+                                        .map(x => declarePropertiesInClass(x))
+                                        .reduce(( x, y ) => x + "\n" + y );
+
+      let initializeProperties = propertyNamesArray
+                                          .map(x => initializePropertiesInClass(x))
+                                          .reduce(( x, y ) => x + "\n" + y );
+
+        fs.writeFile( templateRoute, updatedTemplate, (err) => {
           if (err) throw err;
-        });
-    }
+
+
+
+          fs.readFile(componentRoute, 'ascii', (err, componentData) => {
+
+            let componentLines = componentData.split('\n');
+            componentLines.shift(); //removes the ng g component import statement.
+
+            componentLines.splice( 0, 0, componentImports(file) );
+
+            let exportClassIndex = componentLines.findIndex(includesExportClass);
+            componentLines.splice(exportClassIndex + 1, 0, declareProperties);
+
+            fs.readFile("./gulp_support/componentSnippet.txt", 'ascii', (err, snippetData) => {
+
+              let constructorIndex = componentLines.findIndex(includesConstructor);
+                  componentLines.splice(constructorIndex, 20, snippetData);
+
+              let updatedComponent = componentLines.reduce((x,y)=>(x+ "\n" + y));
+
+              fs.writeFile(componentRoute, updatedComponent, (err, data) => {
+                });
+              });
+            });
+          });
+        };
+      };
+    });
   };
-});
-};
 
 exports.unlink = function(file) {
   console.log("unlink html");
