@@ -1,5 +1,7 @@
 # quickstartProduction
 
+# This repo is being abandoned and the gulp_support is being made into an actual gulp plugin available through npm. Webpack is just better at this point in time and I can't justify keeping this thing going.
+
 ## What this is:
 
 Based off of the Angular seed project.
